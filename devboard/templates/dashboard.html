@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- Welcome banner -->
+<div class="db-welcome mb-4">
+  <h1>Good morning, {{ user.first_name|default:user.username }} 👋</h1>
+  <p>{{ today|date:"l, F j, Y" }} — you're on a {{ current_streak }}-day streak. Keep the momentum going!</p>
+</div>
+
+<!-- Stat cards -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="db-card db-hover db-card-body">
+      <div class="db-stat-icon bg-icon-red-purple"><i class='bx bx-folder'></i></div>
+      <div class="db-stat-value">{{ total_projects }}</div>
+      <div class="db-stat-label">Total Projects</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="db-card db-hover db-card-body">
+      <div class="db-stat-icon bg-icon-green"><i class='bx bx-check-double'></i></div>
+      <div class="db-stat-value">{{ completed_tasks }}</div>
+      <div class="db-stat-label">Completed Tasks</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="db-card db-hover db-card-body">
+      <div class="db-stat-icon bg-icon-amber"><i class='bx bx-flame'></i></div>
+      <div class="db-stat-value">{{ current_streak }} days</div>
+      <div class="db-stat-label">Current Streak</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="db-card db-hover db-card-body">
+      <div class="db-stat-icon bg-icon-blue"><i class='bx bxl-github'></i></div>
+      <div class="db-stat-value">{{ github_contributions }}</div>
+      <div class="db-stat-label">GitHub Contributions</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <!-- Weekly productivity chart -->
+  <div class="col-lg-7">
+    <div class="db-card db-card-body">
+      <div class="db-section-head">
+        <h5>Weekly Productivity</h5>
+        <a href="{% url 'analytics' %}">View analytics</a>
+      </div>
+      <div class="db-chart-wrap">
+        <canvas id="weeklyChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent activity -->
+  <div class="col-lg-5">
+    <div class="db-card db-card-body">
+      <div class="db-section-head">
+        <h5>Recent Activity</h5>
+        <a href="{% url 'activity' %}">View all</a>
+      </div>
+      {% for a in recent_activity %}
+        <div class="db-list-item">
+          <div class="db-list-icon"><i class='bx bx-pulse'></i></div>
+          <div>
+            <div style="font-size:13.5px;color:var(--db-text);">{{ a.description }}</div>
+            <div style="font-size:11.5px;color:var(--db-text-dim);">{{ a.created_at|timesince }} ago</div>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-muted-db" style="font-size:13.5px;">No activity yet — create a project or task to get started.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Recent projects -->
+<div class="db-card db-card-body mt-3">
+  <div class="db-section-head">
+    <h5>Recent Projects</h5>
+    <a href="{% url 'projects' %}">View all</a>
+  </div>
+  <div class="row g-3">
+    {% for p in recent_projects %}
+      <div class="col-md-4">
+        <div class="db-card db-hover db-project-card">
+          <div class="top-row">
+            <h6>{{ p.name }}</h6>
+            <span class="db-badge db-badge-{{ p.status }}"><span class="dot"></span>{{ p.get_status_display }}</span>
+          </div>
+          <p class="desc">{{ p.description|truncatewords:14 }}</p>
+          <div class="db-progress"><div class="bar" style="width:{{ p.progress }}%;"></div></div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted-db" style="font-size:13.5px;">No projects yet. <a href="{% url 'projects' %}" style="color:var(--db-purple);">Create your first one →</a></p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const WEEKLY_DATA = {{ weekly_data_json|safe }};
+  const WEEKLY_LABELS = WEEKLY_DATA.map(d => d.day);
+  const WEEKLY_COUNTS = WEEKLY_DATA.map(d => d.count);
+</script>
+<script src="{% static 'js/charts.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Profile{% endblock %}
+{% block page_title %}Profile{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="db-card db-card-body text-center">
+      <div class="db-profile-avatar mx-auto mb-3">
+        {% if profile.profile_picture %}
+          <img src="{{ profile.profile_picture.url }}" alt="{{ user.username }}">
+        {% else %}
+          {{ user.username|slice:":2"|upper }}
+        {% endif %}
+      </div>
+      <h5 class="text-white mb-0">{{ user.get_full_name|default:user.username }}</h5>
+      <p class="text-muted-db" style="font-size:13.5px;">@{{ user.username }}</p>
+      <p class="text-muted-db" style="font-size:13.5px;">{{ profile.bio|default:"No bio yet." }}</p>
+
+      <div class="d-flex flex-wrap gap-1 justify-content-center mb-3">
+        {% for skill in profile.skills_list %}
+          <span class="tech-pill">{{ skill }}</span>
+        {% endfor %}
+      </div>
+
+      <hr style="border-color:var(--db-border);">
+      <div class="text-start" style="font-size:13.5px;">
+        <div class="d-flex justify-content-between py-1"><span class="text-dim-db">Email</span><span class="text-white">{{ user.email }}</span></div>
+        {% if profile.github_username %}
+        <div class="d-flex justify-content-between py-1"><span class="text-dim-db">GitHub</span><a href="https://github.com/{{ profile.github_username }}" target="_blank" style="color:var(--db-purple);">@{{ profile.github_username }}</a></div>
+        {% endif %}
+        <div class="d-flex justify-content-between py-1"><span class="text-dim-db">Joined</span><span class="text-white">{{ user.date_joined|date:"M Y" }}</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="db-card db-card-body">
+      <div class="db-section-head"><h5>Edit Profile</h5></div>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">First Name</label>
+            {{ form.first_name }}
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Last Name</label>
+            {{ form.last_name }}
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Profile Picture</label>
+          {{ form.profile_picture }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Bio</label>
+          {{ form.bio }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Skills (comma-separated)</label>
+          {{ form.skills }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">GitHub Username</label>
+          {{ form.github_username }}
+        </div>
+        <button type="submit" class="btn-db-gradient"><i class='bx bx-save'></i> Save Changes</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

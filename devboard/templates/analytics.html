@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Analytics{% endblock %}
+{% block page_title %}Analytics{% endblock %}
+
+{% block content %}
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="db-card db-card-body">
+      <div class="db-stat-value">{{ total_tasks }}</div>
+      <div class="db-stat-label">Total Tasks</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="db-card db-card-body">
+      <div class="db-stat-value">{{ completed_tasks }}</div>
+      <div class="db-stat-label">Completed Tasks</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="db-card db-card-body">
+      <div class="db-stat-value">{{ current_streak }} days</div>
+      <div class="db-stat-label">Current Streak</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="db-card db-card-body">
+      <div class="db-stat-value">{{ longest_streak }} days</div>
+      <div class="db-stat-label">Longest Streak</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="db-card db-card-body">
+      <div class="db-section-head"><h5>Weekly Productivity</h5></div>
+      <div class="db-chart-wrap"><canvas id="weeklyChart"></canvas></div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="db-card db-card-body">
+      <div class="db-section-head"><h5>Task Status Breakdown</h5></div>
+      <div class="db-chart-wrap"><canvas id="statusChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<div class="db-card db-card-body mt-3">
+  <div class="db-section-head"><h5>Project Progress</h5></div>
+  <div class="db-chart-wrap" style="height:280px;"><canvas id="progressChart"></canvas></div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const WEEKLY_DATA = {{ weekly_data_json|safe }};
+  const WEEKLY_LABELS = WEEKLY_DATA.map(d => d.day);
+  const WEEKLY_COUNTS = WEEKLY_DATA.map(d => d.count);
+  const STATUS_BREAKDOWN = {{ status_breakdown_json|safe }};
+  const PROJECT_PROGRESS = {{ project_progress_json|safe }};
+</script>
+<script src="{% static 'js/charts.js' %}"></script>
+{% endblock %}

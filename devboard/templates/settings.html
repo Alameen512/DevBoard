@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Settings{% endblock %}
+{% block page_title %}Settings{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-lg-6">
+
+    <!-- Appearance -->
+    <div class="db-card db-card-body mb-3">
+      <div class="db-section-head"><h5>Appearance</h5></div>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_section" value="appearance">
+        <div class="db-setting-row">
+          <div>
+            <strong>Dark Mode</strong>
+            <span class="hint">DevBoard is designed dark-first for long coding sessions.</span>
+          </div>
+          <div class="form-check form-switch">
+            {{ appearance_form.dark_mode }}
+          </div>
+        </div>
+        <button type="submit" class="btn-db-outline btn-sm mt-3">Save Appearance</button>
+      </form>
+    </div>
+
+    <!-- Notifications -->
+    <div class="db-card db-card-body">
+      <div class="db-section-head"><h5>Notifications</h5></div>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_section" value="notifications">
+        <div class="db-setting-row">
+          <div><strong>Email Notifications</strong><span class="hint">Get emailed about important account activity.</span></div>
+          <div class="form-check form-switch">{{ notif_form.email_notifications }}</div>
+        </div>
+        <div class="db-setting-row">
+          <div><strong>Task Reminders</strong><span class="hint">Reminders for tasks approaching their due date.</span></div>
+          <div class="form-check form-switch">{{ notif_form.task_reminders }}</div>
+        </div>
+        <div class="db-setting-row">
+          <div><strong>Project Updates</strong><span class="hint">Notify me when project status changes.</span></div>
+          <div class="form-check form-switch">{{ notif_form.project_update_notifications }}</div>
+        </div>
+        <button type="submit" class="btn-db-outline btn-sm mt-3">Save Notifications</button>
+      </form>
+    </div>
+
+  </div>
+
+  <div class="col-lg-6">
+
+    <!-- Account -->
+    <div class="db-card db-card-body mb-3">
+      <div class="db-section-head"><h5>Account</h5></div>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_section" value="account">
+        <div class="mb-3">
+          <label class="form-label">Username</label>
+          {{ account_form.username }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          {{ account_form.email }}
+        </div>
+        <button type="submit" class="btn-db-gradient btn-sm">Update Account</button>
+      </form>
+    </div>
+
+    <!-- Password -->
+    <div class="db-card db-card-body">
+      <div class="db-section-head"><h5>Change Password</h5></div>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="form_section" value="password">
+        <div class="mb-3">
+          <label class="form-label">Current Password</label>
+          {{ password_form.old_password }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">New Password</label>
+          {{ password_form.new_password1 }}
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Confirm New Password</label>
+          {{ password_form.new_password2 }}
+        </div>
+        <button type="submit" class="btn-db-gradient btn-sm">Change Password</button>
+      </form>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/settings.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Tasks{% endblock %}
+{% block page_title %}Tasks{% endblock %}
+
+{% block topbar_actions %}
+<button class="btn btn-db-gradient" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+  <i class='bx bx-plus'></i> Add Task
+</button>
+{% endblock %}
+
+{% block content %}
+
+<div class="row g-3 mb-4">
+  <div class="col-4">
+    <div class="db-card db-card-body py-3">
+      <div class="db-stat-value" style="font-size:20px;">{{ todo_count }}</div>
+      <div class="db-stat-label">Todo</div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="db-card db-card-body py-3">
+      <div class="db-stat-value" style="font-size:20px;">{{ in_progress_count }}</div>
+      <div class="db-stat-label">In Progress</div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="db-card db-card-body py-3">
+      <div class="db-stat-value" style="font-size:20px;">{{ completed_count }}</div>
+      <div class="db-stat-label">Completed</div>
+    </div>
+  </div>
+</div>
+
+<div class="db-card db-card-body">
+  <div class="d-flex flex-wrap gap-2 justify-content-between mb-3">
+    <div class="d-flex gap-2 flex-wrap" id="taskFilters">
+      <button class="db-filter-pill active" data-filter="all">All</button>
+      <button class="db-filter-pill" data-filter="todo">Todo</button>
+      <button class="db-filter-pill" data-filter="in_progress">In Progress</button>
+      <button class="db-filter-pill" data-filter="completed">Completed</button>
+    </div>
+    <div style="min-width:220px;">
+      <input type="text" id="taskSearch" class="form-control form-control-sm" placeholder="Search tasks...">
+    </div>
+  </div>
+
+  <div id="taskList">
+    {% for t in tasks %}
+    <div class="db-task-row {% if t.status == 'completed' %}completed{% endif %}" data-status="{{ t.status }}" data-title="{{ t.title|lower }}">
+      <form method="post" action="{% url 'task_complete' t.id %}">
+        {% csrf_token %}
+        <button type="submit" class="db-task-check" {% if t.status == 'completed' %}disabled{% endif %}>
+          <i class='bx bx-check'></i>
+        </button>
+      </form>
+      <div class="flex-fill" style="min-width:0;">
+        <div class="task-title">{{ t.title }}</div>
+        <div class="task-meta">
+          {% if t.project %}<span><i class='bx bx-folder'></i> {{ t.project.name }}</span>{% endif %}
+          {% if t.due_date %}<span><i class='bx bx-calendar'></i> {{ t.due_date }}</span>{% endif %}
+          <span class="db-badge db-badge-{{ t.priority }}">{{ t.get_priority_display }} priority</span>
+          <span class="db-badge db-badge-{{ t.status }}">{{ t.get_status_display }}</span>
+        </div>
+      </div>
+      <div class="d-flex gap-1 flex-shrink-0">
+        <button type="button" class="btn-db-ghost btn-sm" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ t.id }}"><i class='bx bx-edit-alt'></i></button>
+        <form method="post" action="{% url 'task_delete' t.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn-db-ghost btn-db-danger-ghost btn-sm" onclick="return confirm('Delete this task?');"><i class='bx bx-trash'></i></button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Edit task modal -->
+    <div class="modal fade" id="editTaskModal{{ t.id }}" tabindex="-1">
+      <div class="modal-dialog">
+        <form method="post" action="{% url 'task_edit' t.id %}">
+          {% csrf_token %}
+          <div class="modal-content" style="background:var(--db-surface);border:1px solid var(--db-border-light);border-radius:var(--db-radius-lg);">
+            <div class="modal-header border-0">
+              <h5 class="modal-title text-white">Edit Task</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              {% include 'partials/_task_fields.html' with task=t %}
+            </div>
+            <div class="modal-footer border-0">
+              <button type="button" class="btn-db-outline" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn-db-gradient">Save Changes</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    {% empty %}
+    <div class="text-center py-5">
+      <i class='bx bx-task' style="font-size:38px;color:var(--db-text-dim);"></i>
+      <p class="text-muted-db mt-2 mb-0">No tasks yet — add your first task above.</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="text-center py-4 d-none" id="noTaskResults">
+    <i class='bx bx-search-alt' style="font-size:32px;color:var(--db-text-dim);"></i>
+    <p class="text-muted-db mt-2 mb-0">No tasks match your search or filter.</p>
+  </div>
+</div>
+
+<!-- Add task modal -->
+<div class="modal fade" id="addTaskModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="post" action="{% url 'task_create' %}">
+      {% csrf_token %}
+      <div class="modal-content" style="background:var(--db-surface);border:1px solid var(--db-border-light);border-radius:var(--db-radius-lg);">
+        <div class="modal-header border-0">
+          <h5 class="modal-title text-white">Add Task</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          {% include 'partials/_task_fields.html' %}
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn-db-outline" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn-db-gradient">Add Task</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/tasks.js' %}"></script>
+{% endblock %}

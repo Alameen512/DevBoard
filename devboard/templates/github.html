@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}GitHub{% endblock %}
+{% block page_title %}GitHub{% endblock %}
+
+{% block content %}
+
+<div class="db-card db-card-body mb-4 d-flex flex-wrap align-items-center gap-4">
+  <div class="db-avatar" style="width:64px;height:64px;font-size:22px;"><i class='bx bxl-github'></i></div>
+  <div class="flex-fill">
+    <h5 class="text-white mb-1">@{{ github.username }}</h5>
+    <p class="text-muted-db mb-0" style="font-size:13.5px;">Primary language: <strong class="text-white">{{ github.primary_language }}</strong></p>
+  </div>
+  <a href="https://github.com/{{ github.username }}" target="_blank" rel="noopener" class="btn-db-outline"><i class='bx bxl-github'></i> View Profile</a>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="db-card db-hover db-card-body">
+      <div class="db-stat-icon bg-icon-red-purple"><i class='bx bx-git-repo-forked'></i></div>
+      <div class="db-stat-value">{{ github.repos }}</div>
+      <div class="db-stat-label">Repositories</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="db-card db-hover db-card-body">
+      <div class="db-stat-icon bg-icon-blue"><i class='bx bx-group'></i></div>
+      <div class="db-stat-value">{{ github.followers }}</div>
+      <div class="db-stat-label">Followers</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="db-card db-hover db-card-body">
+      <div class="db-stat-icon bg-icon-amber"><i class='bx bx-user-plus'></i></div>
+      <div class="db-stat-value">{{ github.following }}</div>
+      <div class="db-stat-label">Following</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="db-card db-hover db-card-body">
+      <div class="db-stat-icon bg-icon-green"><i class='bx bx-code-alt'></i></div>
+      <div class="db-stat-value">{{ github.primary_language }}</div>
+      <div class="db-stat-label">Top Language</div>
+    </div>
+  </div>
+</div>
+
+<div class="db-card db-card-body">
+  <div class="db-section-head"><h5>Recent Repositories</h5></div>
+  <div class="row g-3">
+    {% for repo in github.recent_repos %}
+    <div class="col-md-6">
+      <div class="db-card db-hover db-card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <h6 class="text-white mb-1"><i class='bx bx-book-bookmark' style="color:var(--db-purple);"></i> {{ repo.name }}</h6>
+          <span style="font-size:12.5px;color:var(--db-amber);"><i class='bx bx-star'></i> {{ repo.stars }}</span>
+        </div>
+        <p class="text-muted-db mb-2" style="font-size:13px;">{{ repo.description }}</p>
+        <span class="tech-pill">{{ repo.language }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<p class="text-dim-db mt-3" style="font-size:12.5px;">
+  <i class='bx bx-info-circle'></i> This data is currently mocked in <code>views.get_github_data()</code>. Swap it for real calls to the GitHub REST API (<code>https://api.github.com/users/&lt;username&gt;</code>) once you're ready to go live.
+</p>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+<div class="mb-3">
+  <label class="form-label">Project Name</label>
+  <input type="text" name="name" class="form-control" value="{{ name_val|default:'' }}" placeholder="e.g. DevBoard" required>
+</div>
+<div class="mb-3">
+  <label class="form-label">Description</label>
+  <textarea name="description" class="form-control" rows="3" placeholder="What does this project do?">{{ desc_val|default:'' }}</textarea>
+</div>
+<div class="row">
+  <div class="col-6 mb-3">
+    <label class="form-label">Status</label>
+    <select name="status" class="form-select">
+      <option value="planned" {% if status_val == 'planned' %}selected{% endif %}>Planned</option>
+      <option value="in_progress" {% if status_val == 'in_progress' %}selected{% endif %}>In Progress</option>
+      <option value="completed" {% if status_val == 'completed' %}selected{% endif %}>Completed</option>
+    </select>
+  </div>
+  <div class="col-6 mb-3">
+    <label class="form-label">Progress (%)</label>
+    <input type="number" name="progress" class="form-control" min="0" max="100" value="{{ progress_val|default:'0' }}">
+  </div>
+</div>
+<div class="mb-3">
+  <label class="form-label">Technologies</label>
+  <input type="text" name="technologies" class="form-control" value="{{ tech_val|default:'' }}" placeholder="Django, Bootstrap, SQLite">
+</div>
+<div class="row">
+  <div class="col-6 mb-3">
+    <label class="form-label">GitHub URL</label>
+    <input type="url" name="github_url" class="form-control" value="{{ gh_val|default:'' }}" placeholder="https://github.com/you/project">
+  </div>
+  <div class="col-6 mb-3">
+    <label class="form-label">Live Demo URL</label>
+    <input type="url" name="live_url" class="form-control" value="{{ live_val|default:'' }}" placeholder="https://demo-link.com">
+  </div>
+</div>

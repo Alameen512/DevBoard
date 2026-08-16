@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Activity{% endblock %}
+{% block page_title %}Activity{% endblock %}
+
+{% block content %}
+<div class="db-card db-card-body">
+  <div class="db-section-head">
+    <h5>All Activity</h5>
+  </div>
+  {% for a in activities %}
+    <div class="db-list-item">
+      <div class="db-list-icon">
+        {% if 'project' in a.activity_type %}<i class='bx bx-folder'></i>
+        {% elif 'task' in a.activity_type %}<i class='bx bx-task'></i>
+        {% else %}<i class='bx bx-user'></i>{% endif %}
+      </div>
+      <div class="flex-fill">
+        <div style="font-size:14px;color:var(--db-text);">{{ a.description }}</div>
+        <div style="font-size:12px;color:var(--db-text-dim);">{{ a.created_at|date:"M j, Y — g:i A" }} · {{ a.created_at|timesince }} ago</div>
+      </div>
+      <span class="db-badge db-badge-planned">{{ a.get_activity_type_display }}</span>
+    </div>
+  {% empty %}
+    <div class="text-center py-5">
+      <i class='bx bx-pulse' style="font-size:38px;color:var(--db-text-dim);"></i>
+      <p class="text-muted-db mt-2 mb-0">No activity recorded yet.</p>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

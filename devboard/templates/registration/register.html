@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Create Account{% endblock %}
+
+{% block auth_content %}
+<div class="db-auth-shell">
+  <div class="db-card db-auth-card">
+    <div class="text-center mb-4">
+      <div class="db-brand justify-content-center border-0 p-0 mb-2">
+        <div class="mark">DB</div>
+      </div>
+      <h4 class="text-white fw-bold mb-1">Create your account</h4>
+      <p class="text-muted-db" style="font-size:14px;">Start tracking your projects, tasks and streaks</p>
+    </div>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-danger border-0 py-2 px-3 mb-3" style="background:var(--db-surface-2); color:var(--db-text); border-radius:10px; font-size:13.5px;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        {{ form.username }}
+        {% if form.username.errors %}<div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>{% endif %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        {{ form.email }}
+        {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>{% endif %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        {{ form.password1 }}
+        {% if form.password1.errors %}<div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>{% endif %}
+        <div class="text-muted-db" style="font-size:11.5px;margin-top:4px;">Use 8+ characters — avoid common passwords.</div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Confirm Password</label>
+        {{ form.password2 }}
+        {% if form.password2.errors %}<div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>{% endif %}
+      </div>
+      <button type="submit" class="btn btn-db-gradient w-100 mt-2">Create Account</button>
+    </form>
+
+    <p class="text-center mt-4 mb-0" style="font-size:13.5px;">
+      <span class="text-muted-db">Already have an account?</span>
+      <a href="{% url 'login' %}" style="color:var(--db-purple); font-weight:600;">Sign in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
