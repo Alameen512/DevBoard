@@ -100,7 +100,8 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-
+print("DATABASE_URL SET:", bool(os.environ.get("DATABASE_URL")))
+print("DATABASE ENGINE:", DATABASES["default"]["ENGINE"])
 
 # ------------------------------------------------------------------
 # PASSWORD VALIDATION
